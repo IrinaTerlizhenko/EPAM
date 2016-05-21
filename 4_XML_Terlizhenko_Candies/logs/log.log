@@ -1,0 +1,13 @@
+2016-04-03 04:21:28,683 ERROR [main] launcher.StudentErrorHandler (StudentErrorHandler.java:29) - 2 : 97 - cvc-elt.1: Cannot find the declaration of element 'candies'.
+2016-04-03 04:22:04,425 ERROR [main] launcher.StudentErrorHandler (StudentErrorHandler.java:29) - 2 : 11 - cvc-elt.1: Cannot find the declaration of element 'candies'.
+2016-04-03 04:26:09,796 ERROR [main] launcher.StudentErrorHandler (StudentErrorHandler.java:29) - 4 : 76 - cvc-elt.1: Cannot find the declaration of element 'candies'.
+2016-04-03 04:30:56,392 ERROR [main] launcher.StudentErrorHandler (StudentErrorHandler.java:29) - 4 : 76 - cvc-elt.1: Cannot find the declaration of element 'candies'.
+2016-04-03 04:41:20,637 ERROR [main] launcher.StudentErrorHandler (StudentErrorHandler.java:29) - 4 : 76 - cvc-elt.1: Cannot find the declaration of element 'candies'.
+2016-04-03 04:42:11,406 ERROR [main] launcher.StudentErrorHandler (StudentErrorHandler.java:29) - 4 : 75 - cvc-elt.1: Cannot find the declaration of element 'candies'.
+2016-04-03 04:42:20,895 ERROR [main] launcher.StudentErrorHandler (StudentErrorHandler.java:29) - 4 : 75 - cvc-elt.1: Cannot find the declaration of element 'candies'.
+2016-04-03 04:48:25,062 ERROR [main] launcher.StudentErrorHandler (StudentErrorHandler.java:29) - 4 : 75 - cvc-elt.1: Cannot find the declaration of element 'candies'.
+2016-04-03 04:48:57,738 ERROR [main] launcher.StudentErrorHandler (StudentErrorHandler.java:29) - 4 : 44 - cvc-elt.1: Cannot find the declaration of element 'candies'.
+2016-04-03 04:49:27,956 ERROR [main] launcher.StudentErrorHandler (StudentErrorHandler.java:29) - 4 : 44 - cvc-elt.1: Cannot find the declaration of element 'candies'.
+2016-04-03 04:52:55,080 ERROR [main] launcher.StudentErrorHandler (StudentErrorHandler.java:29) - 4 : 57 - cvc-elt.1: Cannot find the declaration of element 'candies'.
+2016-04-03 05:00:12,324 ERROR [main] launcher.StudentErrorHandler (StudentErrorHandler.java:29) - 4 : 57 - cvc-elt.1: Cannot find the declaration of element 'candies'.
+2016-04-03 07:16:11,739 ERROR [main] launcher.StudentErrorHandler (StudentErrorHandler.java:29) - 5 : 74 - cvc-elt.1: Cannot find the declaration of element 'tariffs'.

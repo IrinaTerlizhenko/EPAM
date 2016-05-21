@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<candies xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xmlns="urn:xml.candies"
+          xsi:schemaLocation="urn:xml.candies candies.xsd">
+
+	<candy id="BLR20160403100917" type="chocolate">
+		<name>Krolik</name>
+		<energy>90</energy>
+		<ingredient>
+			<water>10</water>
+			<sugar>15</sugar>
+			<fructose>6</fructose>
+			<vanillin>11</vanillin>
+		</ingredient>
+		<value>
+			<proteins>4</proteins>
+			<fats>9</fats>
+			<carbohydrates>12</carbohydrates>
+		</value>
+		<production>Company A</production>
+	</candy>
+
+    <candy id="BLR20160403103125" type="chocolate">
+        <name>Mishka</name>
+        <energy>90</energy>
+        <ingredient>
+            <water>10</water>
+            <sugar>15</sugar>
+            <fructose>6</fructose>
+            <vanillin>11</vanillin>
+        </ingredient>
+        <value>
+            <proteins>4</proteins>
+            <fats>9</fats>
+            <carbohydrates>12</carbohydrates>
+        </value>
+        <production>Company A</production>
+    </candy>
+
+    <present_candy id="USA20160403142437" type="caramel">
+        <name>Santa</name>
+        <energy>90</energy>
+        <ingredient>
+            <water>10</water>
+            <sugar>15</sugar>
+            <fructose>6</fructose>
+            <vanillin>11</vanillin>
+        </ingredient>
+        <value>
+            <proteins>4</proteins>
+            <fats>9</fats>
+            <carbohydrates>12</carbohydrates>
+        </value>
+        <production>Candy Production Inc</production>
+        <packaging type="wrapper">
+            <color>Blue</color>
+        </packaging>
+        <holiday>New Year</holiday>
+    </present_candy>
+
+    <present_candy id="ITA20151230235207" type="iris">
+        <name>Santa</name>
+        <energy>90</energy>
+        <ingredient>
+            <water>10</water>
+            <sugar>15</sugar>
+            <fructose>6</fructose>
+            <vanillin>11</vanillin>
+        </ingredient>
+        <value>
+            <proteins>4</proteins>
+            <fats>9</fats>
+            <carbohydrates>12</carbohydrates>
+        </value>
+        <production>Company B</production>
+        <packaging type="box">
+            <picture>Santa Claus</picture>
+        </packaging>
+        <holiday>New Year</holiday>
+    </present_candy>
+
+</candies>

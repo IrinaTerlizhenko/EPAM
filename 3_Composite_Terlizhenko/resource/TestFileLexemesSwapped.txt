@@ -1,0 +1,1 @@
+lalala; packageanotherpackage.someclass; importSystem.out.println(28); "string"; return 1; return x; this.x = f; this.f = 0; int z = 6; int z = 

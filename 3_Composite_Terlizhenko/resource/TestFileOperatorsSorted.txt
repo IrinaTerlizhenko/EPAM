@@ -1,0 +1,9 @@
+package lalala; 
+import anotherpackage.someclass; 
+						System.out.println(28); 
+			return "string"; 
+						return 1; 
+		this.x = x; 
+		this.f = f; 
+		int z = 0; 
+		int z = 6; 
