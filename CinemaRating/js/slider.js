@@ -1,9 +1,9 @@
 $(document).ready(function() {
     $(".slider").each(function() {
 
-        var repeats = 5, // кількість повторювань автоматичного прокручування
-            interval = 5, // інтервал в секундах
-            repeat = true, // чи треба автоматично прокручувати (true/false)
+        var repeats = 5,
+            interval = 5,
+            repeat = true,
             slider = $(this),
             repeatCount = 0,
             elements = $(slider).find("li").length;
