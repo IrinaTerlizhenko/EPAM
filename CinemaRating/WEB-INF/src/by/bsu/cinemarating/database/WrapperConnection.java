@@ -7,10 +7,6 @@ import java.sql.*;
 import java.util.Properties;
 
 /**
- * Created with IntelliJ IDEA.
- * User: Irina
- * Date: 12.04.16
- * Time: 3:42
  * Wrapper on java.sql.Connection.
  */
 public class WrapperConnection {
@@ -62,7 +58,7 @@ public class WrapperConnection {
      *
      * @param sql an SQL statement that may contain one or more '?' IN parameter placeholders
      * @return a new default PreparedStatement object containing the pre-compiled SQL statement
-     * @throws SQLException
+     * @throws SQLException if connection or statement is null
      */
     public PreparedStatement prepareStatement(String sql) throws SQLException {
         if (connection != null) {
@@ -74,14 +70,40 @@ public class WrapperConnection {
         throw new SQLException("Connection or statement is null.");
     }
 
+    /**
+     * Sets this connection's auto-commit mode to the given state. If a connection is in auto-commit mode, then all its
+     * SQL statements will be executed and committed as individual transactions. Otherwise, its SQL statements are
+     * grouped into transactions that are terminated by a call to either the method commit or the method rollback. By
+     * default, new connections are in auto-commit mode.
+     *
+     * @param autoCommit true to enable auto-commit mode; false to disable it
+     * @throws SQLException if a database access error occurs, setAutoCommit(true) is called while participating in a
+     * distributed transaction, or this method is called on a closed connection
+     */
     public void setAutoCommit(boolean autoCommit) throws SQLException {
         connection.setAutoCommit(autoCommit);
     }
 
+    /**
+     * Undoes all changes made in the current transaction and releases any database locks currently held by this
+     * WrapperConnection object. This method should be used only when auto-commit mode has been disabled.
+     *
+     * @throws SQLException if a database access error occurs, this method is called while participating in a
+     * distributed transaction, this method is called on a closed connection or this WrapperConnection object is in
+     * auto-commit mode
+     */
     public void rollback() throws SQLException {
         connection.rollback();
     }
 
+    /**
+     * Makes all changes made since the previous commit/rollback permanent and releases any database locks currently
+     * held by this Connection object. This method should be used only when auto-commit mode has been disabled.
+     *
+     * @throws SQLException if a database access error occurs, this method is called while participating in a
+     * distributed transaction, if this method is called on a closed conection or this WrapperConnection object is in
+     * auto-commit mode
+     */
     public void commit() throws SQLException {
         connection.commit();
     }

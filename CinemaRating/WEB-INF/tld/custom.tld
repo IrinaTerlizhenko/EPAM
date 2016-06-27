@@ -7,18 +7,24 @@
     <short-name>ctg</short-name>
     <uri>customtags</uri>
     <tag>
-        <name>info-time</name>
-        <tag-class>by.bsu.cinemarating.tag.custom.InfoTimeTag</tag-class>
-        <body-content>empty</body-content>
-    </tag>
-    <tag>
         <name>admin</name>
         <tag-class>by.bsu.cinemarating.tag.custom.AdminTag</tag-class>
         <body-content>scriptless</body-content>
     </tag>
     <tag>
-        <name>notBanned</name>
-        <tag-class>by.bsu.cinemarating.tag.custom.BanTag</tag-class>
-        <body-content>scriptless</body-content>
+        <name>pagination</name>
+        <tag-class>by.bsu.cinemarating.tag.custom.Pagination</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <name>upper</name>
+            <required>true</required>
+            <type>java.lang.Boolean</type>
+        </attribute>
+        <attribute>
+            <name>size</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.Integer</type>
+        </attribute>
     </tag>
 </taglib>

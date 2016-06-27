@@ -16,14 +16,11 @@ import javax.servlet.http.Part;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.time.Year;
 import java.util.List;
 import java.util.Optional;
 
 /**
- * Created with IntelliJ IDEA.
- * User: Irina
- * Date: 22.04.16
- * Time: 5:05
  * A service layer class implementing all the logic concerning movies.
  */
 public class MovieLogic {
@@ -32,6 +29,12 @@ public class MovieLogic {
      */
     private static final String PICTURE_FOLDER = "img" + File.separator + "movie";
     private static final String DEFAULT_PICTURE = "default.png";
+
+    private static final String REGEXP_MOVIE_NAME = ".{1,50}";
+    private static final String REGEXP_MOVIE_DESCRIPTION = ".{0,1000}";
+    private static final int MIN_YEAR = 1888;
+    private static final int MAX_YEAR = Year.now().getValue() + 1;
+    private static final String REGEXP_COUNTRY = "([A-Z][A-Za-z]*(, [A-Z][A-Za-z]*)*)|([А-Я][А-Яа-я]*(, [А-Я][А-Яа-я]*)*)";
 
     /**
      * Retrieves all the movies in the system.
@@ -167,13 +170,13 @@ public class MovieLogic {
         ValidationResult result = ValidationResult.UNKNOWN_ERROR;
         Optional<WrapperConnection> optConnection = Optional.empty();
         try {
-            if (!Validator.validateMovieName(name)) {
+            if (!validateMovieName(name)) {
                 result = ValidationResult.NAME_INCORRECT;
-            } else if (!Validator.validateMovieDescription(description)) {
+            } else if (!validateMovieDescription(description)) {
                 result = ValidationResult.DESCRIPTION_INCORRECT;
-            } else if (!Validator.validateYear(year)) {
+            } else if (!validateYear(year)) {
                 result = ValidationResult.YEAR_INCORRECT;
-            } else if (!Validator.validateCountry(country)) {
+            } else if (!validateCountry(country)) {
                 result = ValidationResult.COUNTRY_INCORRECT;
             } else {
                 optConnection = ConnectionPool.getInstance().takeConnection();
@@ -184,7 +187,7 @@ public class MovieLogic {
                 String filename = PictureLoader.loadPicture(filePart, movie.getId(), path, PICTURE_FOLDER, DEFAULT_PICTURE);
                 if (filename != null) {
                     movie.setRef(filename);
-                    movieDAO.update(movie); // todo update ref
+                    movieDAO.update(movie);
                 }
                 result = ValidationResult.ALL_RIGHT;
             }
@@ -249,5 +252,68 @@ public class MovieLogic {
             optConnection.ifPresent(ConnectionPool.getInstance()::returnConnection);
         }
         return result;
+    }
+
+    /**
+     * Retrieves id of the last added movie.
+     *
+     * @return id of the last added movie
+     * @throws LogicException if any exceptions occurred on the DAO or SQL layer
+     */
+    public static int takeLastId() throws LogicException {
+        int id = 0;
+        Optional<WrapperConnection> optConnection = Optional.empty();
+        try {
+            optConnection = ConnectionPool.getInstance().takeConnection();
+            WrapperConnection connection = optConnection.orElseThrow(SQLException::new);
+            MovieDAO movieDAO = new MovieDAO(connection);
+            id = movieDAO.selectLastId();
+        } catch (SQLException | DAOException e) {
+            throw new LogicException(e);
+        } finally {
+            optConnection.ifPresent(ConnectionPool.getInstance()::returnConnection);
+        }
+        return id;
+    }
+
+    /**
+     * Validates movie name. A movie name contains from 1 to 50 symbols.
+     *
+     * @param movieName String containing movie name
+     * @return true if name is valid, false otherwise
+     */
+    private static boolean validateMovieName(String movieName) {
+        return Validator.validate(movieName, REGEXP_MOVIE_NAME);
+    }
+
+    /**
+     * Validates movie description. A movie description contains from 0 to 1000 symbols.
+     *
+     * @param movieDescription String containing movie description
+     * @return true if description is valid, false otherwise
+     */
+    private static boolean validateMovieDescription(String movieDescription) {
+        return Validator.validate(movieDescription, REGEXP_MOVIE_DESCRIPTION);
+    }
+
+    /**
+     * Validates movie year. A year is a positive number between 1888 and future year.
+     *
+     * @param year movie premiere year
+     * @return true if year is valid, false otherwise
+     */
+    private static boolean validateYear(int year) {
+        return year >= MIN_YEAR && year <= MAX_YEAR;
+    }
+
+    /**
+     * Validates movie production country. A country contains either english or russian letters. A country contains
+     * one or more words starting with a capital letter, divided from each other by one comma and space.
+     *
+     * @param country String containing movie production countries (maybe several)
+     * @return true if country is valid, false otherwise
+     */
+    private static boolean validateCountry(String country) {
+        return Validator.validate(country, REGEXP_COUNTRY);
     }
 }

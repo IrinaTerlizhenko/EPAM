@@ -40,7 +40,6 @@ public class SearchLogic {
             MovieDAO movieDAO = new MovieDAO(connection);
             List<Movie> mlist = movieDAO.findAll();
             list.add(mlist.stream().filter(m -> containsQuery(query, m)).collect(Collectors.toList()));
-            //todo other entities
         } catch (SQLException e) {
             throw new LogicException("DB connection error: ", e);
         } catch (DAOException e) {
@@ -76,16 +75,5 @@ public class SearchLogic {
         return movie.getName().contains(query) ||
                 movie.getDescription().contains(query) ||
                 movie.getCountry().contains(query);
-    }
-
-    /**
-     * Checks the review for coincidence with the query
-     *
-     * @param query  string containing user's query
-     * @param review review to check for coincidence
-     * @return true if any of review's fields contains query, false otherwise
-     */
-    private static boolean containsQuery(String query, Review review) {
-        return review.getText().contains(query);
     }
 }

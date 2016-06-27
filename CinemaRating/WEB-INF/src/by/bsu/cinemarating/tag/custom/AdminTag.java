@@ -7,7 +7,7 @@ import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.tagext.TagSupport;
 
 /**
- * A tag, which body will be executed if and only if the user has administrative rights in the system.
+ * A tag, which body will be executed if and only if the user has administrator's rights in the system.
  */
 @SuppressWarnings("serial")
 public class AdminTag extends TagSupport {

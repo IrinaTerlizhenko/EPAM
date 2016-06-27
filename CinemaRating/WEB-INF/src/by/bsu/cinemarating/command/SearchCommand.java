@@ -26,7 +26,6 @@ public class SearchCommand implements ActionCommand {
                 List<List<Entity>> queryList = SearchLogic.findFullCoincidence(query);
                 request.setAttribute(USER_RESULT, queryList.get(0));
                 request.setAttribute(MOVIE_RESULT, queryList.get(1));
-                // todo other entities
             }
             page = ConfigurationManager.getProperty("path.page.search");
         } catch (LogicException e) {

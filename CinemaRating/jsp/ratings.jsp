@@ -24,48 +24,37 @@
                     <fmt:message key="title.my_rating" bundle="${rb}"/>
                 </h1>
 
-                <ul class="pagination">
-                    <c:if test="${num_page > 0}">
-                        <li><a href="${pageContext.request.contextPath}/controller?command=change_page&num_page=${num_page - 1}">&laquo;</a></li>
-                    </c:if>
-                    <c:forEach var="index" begin="0" end="${fn:length(rating_map) / 10}"> <!-- todo divide -->
-                        <li id="top-${index}"><a href="${pageContext.request.contextPath}/controller?command=change_page&num_page=${index}">${index + 1}</a></li>
-                    </c:forEach>
-                    <c:if test="${num_page <= fn:length(rating_map) / 10 - 1}"> <!-- todo -->
-                        <li><a href="${pageContext.request.contextPath}/controller?command=change_page&num_page=${num_page + 1}">&raquo;</a></li>
-                    </c:if>
-                </ul>
+                <c:choose>
+                    <c:when test="${fn:length(rating_map) > 0}">
+                        <ctg:pagination upper="true" size="${fn:length(rating_map)}"/>
 
-                <c:forEach var="entry" items="${rating_map}" begin="${num_page * 10}" end="${num_page * 10 + 9}">
-                    <div class="container">
-                        <div class="picture col-sm-2 col-sm-offset-2">
-                            <img src="${pageContext.request.contextPath}/${entry.key.ref}" alt="${entry.key.name}">
-                        </div>
-                        <div class="col-sm-6 text-container">
-                            <a href="${pageContext.request.contextPath}/controller?command=show_movie&movie_id=${entry.key.id}">
-                                <h2>${entry.key.name}</h2>
-                            </a>
-                            <h4 class="sub-text">
-                                <fmt:message key="label.rating" bundle="${rb}"/>: ${entry.key.rating}
-                                <br/>
-                                <fmt:message key="label.my_rating" bundle="${rb}"/>: ${entry.value}
-                            </h4>
-                            <div class="justify">${entry.key.description}</div>
-                        </div>
-                    </div>
-                </c:forEach>
+                        <c:forEach var="entry" items="${rating_map}" begin="${num_page * 10}" end="${num_page * 10 + 9}">
+                            <div class="container">
+                                <div class="picture col-sm-2 col-sm-offset-2">
+                                    <img src="${pageContext.request.contextPath}/${entry.key.ref}" alt="">
+                                </div>
+                                <div class="col-sm-6 text-container">
+                                    <a href="${pageContext.request.contextPath}/controller?command=show_movie&movie_id=${entry.key.id}">
+                                        <h2><c:out value="${entry.key.name}"></c:out></h2>
+                                    </a>
+                                    <h4 class="sub-text">
+                                        <fmt:message key="label.rating" bundle="${rb}"/>: <c:out value="${entry.key.rating}"></c:out>
+                                        <br/>
+                                        <fmt:message key="label.my_rating" bundle="${rb}"/>: <c:out value="${entry.value}"></c:out>
+                                    </h4>
+                                    <div class="justify"><c:out value="${entry.key.description}"></c:out></div>
+                                </div>
+                            </div>
+                        </c:forEach>
 
-                <ul class="pagination">
-                    <c:if test="${num_page > 0}">
-                        <li><a href="${pageContext.request.contextPath}/controller?command=change_page&num_page=${num_page - 1}">&laquo;</a></li>
-                    </c:if>
-                    <c:forEach var="index" begin="0" end="${fn:length(rating_map) / 10}"> <!-- todo divide -->
-                        <li id="bottom-${index}"><a href="${pageContext.request.contextPath}/controller?command=change_page&num_page=${index}">${index + 1}</a></li>
-                    </c:forEach>
-                    <c:if test="${num_page <= fn:length(rating_map) / 10 - 1}"> <!-- todo -->
-                        <li><a href="${pageContext.request.contextPath}/controller?command=change_page&num_page=${num_page + 1}">&raquo;</a></li>
-                    </c:if>
-                </ul>
+                        <ctg:pagination upper="false" size="${fn:length(rating_map)}"/>
+                    </c:when>
+                    <c:otherwise>
+                        <h3>
+                            <fmt:message key="label.no_ratings" bundle="${rb}"/>.
+                        </h3>
+                    </c:otherwise>
+                </c:choose>
             </div>
             <%@ include file="common/footer.jsp"%>
         </div>

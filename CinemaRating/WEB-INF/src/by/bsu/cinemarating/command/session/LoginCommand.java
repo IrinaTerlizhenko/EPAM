@@ -2,9 +2,11 @@ package by.bsu.cinemarating.command.session;
 
 import by.bsu.cinemarating.command.ActionCommand;
 import by.bsu.cinemarating.entity.Movie;
+import by.bsu.cinemarating.entity.Review;
 import by.bsu.cinemarating.entity.User;
 import by.bsu.cinemarating.exception.LogicException;
 import by.bsu.cinemarating.logic.MovieLogic;
+import by.bsu.cinemarating.logic.ReviewLogic;
 import by.bsu.cinemarating.logic.UserLogic;
 import by.bsu.cinemarating.resource.ConfigurationManager;
 import by.bsu.cinemarating.resource.MessageManager;
@@ -12,6 +14,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
 
 public class LoginCommand implements ActionCommand {
@@ -27,10 +30,14 @@ public class LoginCommand implements ActionCommand {
             if (user != null) {
                 request.getSession().setAttribute(USER_ID, user.getId());
                 request.getSession().setAttribute(ROLE, user.getRoleID());
-                ////////////////////////// todo
-                List<Movie> list = MovieLogic.takeLatestAddedMovies(5);
-                request.setAttribute(MOVIES, list);
-                /////////////////////////// todo
+                List<Movie> list = MovieLogic.takeLatestAddedMovies(SIZE_MOVIE);
+                request.setAttribute(LATEST_MOVIES, list);
+                list = MovieLogic.takeTopMovies(SIZE_MOVIE);
+                request.setAttribute(TOP_MOVIES, list);
+                List<String> movieNames = new ArrayList<>();
+                List<Review> reviewList = ReviewLogic.takeLatestReviews(SIZE_REVIEW, movieNames);
+                request.setAttribute(REVIEWS, reviewList);
+                request.setAttribute(MOVIES, movieNames);
                 page = ConfigurationManager.getProperty("path.page.main");
             } else {
                 request.setAttribute(LOGIN, login);

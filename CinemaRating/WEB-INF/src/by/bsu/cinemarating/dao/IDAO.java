@@ -26,6 +26,7 @@ public interface IDAO<T> {
     String REASON = "reason";
 
     String MOVIE_ID = "movie_id";
+    String MOVIE_NAME = "movie_name";
     String DESCRIPTION = "description";
     String YEAR = "year";
     String COUNTRY = "country";

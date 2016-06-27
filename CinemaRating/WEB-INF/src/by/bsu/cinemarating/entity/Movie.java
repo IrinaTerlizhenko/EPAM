@@ -1,12 +1,5 @@
 package by.bsu.cinemarating.entity;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Irina
- * Date: 14.04.16
- * Time: 2:08
- * To change this template use File | Settings | File Templates.
- */
 public class Movie extends Entity {
     private String name;
     private String description;
@@ -71,5 +64,48 @@ public class Movie extends Entity {
 
     public void setRef(String ref) {
         this.ref = ref;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Movie movie = (Movie) o;
+
+        if (year != movie.year) return false;
+        if (Double.compare(movie.rating, rating) != 0) return false;
+        if (!name.equals(movie.name)) return false;
+        if (!description.equals(movie.description)) return false;
+        if (!country.equals(movie.country)) return false;
+        return ref != null ? ref.equals(movie.ref) : movie.ref == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result;
+        long temp;
+        result = name.hashCode();
+        result = 31 * result + description.hashCode();
+        result = 31 * result + year;
+        result = 31 * result + country.hashCode();
+        temp = Double.doubleToLongBits(rating);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        result = 31 * result + (ref != null ? ref.hashCode() : 0);
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "Movie{" +
+                "id='" + getId() + '\'' +
+                "name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", year=" + year +
+                ", country='" + country + '\'' +
+                ", rating=" + rating +
+                ", ref='" + ref + '\'' +
+                '}';
     }
 }

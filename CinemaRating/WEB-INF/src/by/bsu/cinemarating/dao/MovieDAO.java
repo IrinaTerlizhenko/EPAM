@@ -3,6 +3,8 @@ package by.bsu.cinemarating.dao;
 import by.bsu.cinemarating.database.WrapperConnection;
 import by.bsu.cinemarating.entity.Movie;
 import by.bsu.cinemarating.exception.DAOException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -19,23 +21,23 @@ import java.util.Optional;
  * To change this template use File | Settings | File Templates.
  */
 public class MovieDAO extends AbstractDAO<Movie> {
+    private static Logger log = LogManager.getLogger(MovieDAO.class);
+
     private static final String SELECT_ALL = "SELECT movie_id,name,description,year,country,rating,ref FROM movies";
     private static final String SELECT_BY_ID = "SELECT name,description,year,country,rating,ref FROM movies WHERE movie_id=?";
     private static final String SELECT_TOP = "SELECT movie_id,name,description,year,country,rating,ref FROM movies ORDER BY rating DESC LIMIT ?";
     private static final String SELECT_LATEST_ADDED = "SELECT movie_id,name,description,year,country,rating,ref FROM movies ORDER BY movie_id DESC LIMIT ?";
     private static final String SELECT_RATING_BY_MOVIE_ID = "SELECT rating FROM movies WHERE movie_id=?";
+    private static final String SELECT_LAST_ID = "SELECT MAX(movie_id) AS id FROM movies";
+    private static final String SELECT_RATING = "SELECT rating FROM ratings WHERE mid=? AND uid=?";
+    private static final String SELECT_UIDS_BY_MID = "SELECT uid FROM ratings WHERE mid=?";
 
     private static final String INSERT_MOVIE = "INSERT INTO movies(name,description,year,country,ref) VALUES(?,?,?,?,?)";
 
     private static final String DELETE_BY_ID = "DELETE FROM movies WHERE movie_id=?";
-    private static final String DELETE_MOVIE = "DELETE FROM movies WHERE movie_id=? AND name=? AND description=? AND year=? AND country=? AND rating=?";
 
     private static final String UPDATE_MOVIE = "UPDATE movies SET name=?,description=?,year=?,country=?,ref=? WHERE movie_id=?";
     private static final String UPDATE_RATING = "UPDATE movies SET rating=? WHERE movie_id=?";
-
-    private static final String SELECT_RATING = "SELECT rating FROM ratings WHERE mid=? AND uid=?";
-
-    private static final String SELECT_UIDS_BY_MID = "SELECT uid FROM ratings WHERE mid=?";
 
     public MovieDAO(WrapperConnection connection) {
         super(connection);
@@ -54,6 +56,7 @@ public class MovieDAO extends AbstractDAO<Movie> {
             if (res > 0) {
                 created = true;
                 updateId(entity);
+                log.info("Movie " + entity + " created");
             }
         } catch (SQLException e) {
             throw new DAOException(e);
@@ -77,6 +80,7 @@ public class MovieDAO extends AbstractDAO<Movie> {
                 Movie movie = new Movie(id, name, description, year, country, rating, ref);
                 allMovies.add(movie);
             }
+            log.info("All movies retrieved");
         } catch (SQLException e) {
             throw new DAOException(e);
         }
@@ -97,6 +101,9 @@ public class MovieDAO extends AbstractDAO<Movie> {
                     double rating = rs.getDouble(RATING);
                     String ref = rs.getString(REF);
                     movie = new Movie(id, name, description, year, country, rating, ref);
+                    log.info("Movie [id = " + id + "] found");
+                } else {
+                    log.info("Movie [id = " + id + "] not found");
                 }
             }
         } catch (SQLException e) {
@@ -107,27 +114,33 @@ public class MovieDAO extends AbstractDAO<Movie> {
 
     @Override
     public boolean delete(int id) throws DAOException {
+        int rows;
         try (PreparedStatement st = connection.prepareStatement(DELETE_BY_ID)) {
             st.setInt(1, id);
-            st.executeUpdate();
+            rows = st.executeUpdate();
+            if (rows > 0) {
+                log.info("Movie [id = " + id + "] deleted");
+            }
         } catch (SQLException e) {
             throw new DAOException(e);
         }
-        return true;
+        return rows > 0;
     }
 
     @Override
-    public Movie update(Movie entity) throws DAOException { // todo null
+    public Movie update(Movie entity) throws DAOException {
         Movie movie = findEntityById(entity.getId()).get();
         try (PreparedStatement st = connection.prepareStatement(UPDATE_MOVIE)) {
             st.setString(1, entity.getName());
             st.setString(2, entity.getDescription());
             st.setInt(3, entity.getYear());
             st.setString(4, entity.getCountry());
-            //st.setDouble(5, entity.getRating());
             st.setString(5, entity.getRef());
             st.setInt(6, entity.getId());
-            st.executeUpdate();
+            int updated = st.executeUpdate();
+            if (updated > 0) {
+                log.info("Movie " + entity + " updated");
+            }
         } catch (SQLException e) {
             throw new DAOException(e);
         }
@@ -138,7 +151,12 @@ public class MovieDAO extends AbstractDAO<Movie> {
         try (PreparedStatement st = connection.prepareStatement(UPDATE_RATING)) {
             st.setDouble(1, rating);
             st.setInt(2, movieId);
-            st.executeUpdate();
+            int rows = st.executeUpdate();
+            if (rows > 0) {
+                log.info("Rating of movie [id = " + movieId + "] updated");
+            } else {
+                log.info("Rating of movie [id = " + movieId + "] not updated");
+            }
         } catch (SQLException e) {
             throw new DAOException(e);
         }
@@ -151,6 +169,7 @@ public class MovieDAO extends AbstractDAO<Movie> {
             ResultSet rs = st.executeQuery();
             if (rs.next()) {
                 rating = rs.getDouble(RATING);
+                log.info("Rating of movie [id = " + movieId + "] selected");
             }
         } catch (SQLException e) {
             throw new DAOException(e);
@@ -174,6 +193,7 @@ public class MovieDAO extends AbstractDAO<Movie> {
                 Movie movie = new Movie(id, name, description, year, country, rating, ref);
                 topMovies.add(movie);
             }
+            log.info("Top " + size + " movies found");
         } catch (SQLException e) {
             throw new DAOException(e);
         }
@@ -196,6 +216,7 @@ public class MovieDAO extends AbstractDAO<Movie> {
                 Movie movie = new Movie(id, name, description, year, country, rating, ref);
                 latestMovies.add(movie);
             }
+            log.info("Latest added " + size + " movies found");
         } catch (SQLException e) {
             throw new DAOException(e);
         }
@@ -210,6 +231,7 @@ public class MovieDAO extends AbstractDAO<Movie> {
             ResultSet rs = st.executeQuery();
             if (rs.next()) {
                 rating = rs.getByte(RATING);
+                log.info("Rating of user [" + userId + "] to movie [id = " + movieId + "] selected");
             }
         } catch (SQLException e) {
             throw new DAOException(e);
@@ -223,12 +245,17 @@ public class MovieDAO extends AbstractDAO<Movie> {
             st.setInt(1, movieId);
             ResultSet rs = st.executeQuery();
             while (rs.next()) {
-                int uid = rs.getInt(UID);
-                whoRated.add(uid);
+                int userId = rs.getInt(UID);
+                whoRated.add(userId);
             }
+            log.info("All users who rated movie [id = " + movieId + "] selected");
         } catch (SQLException e) {
             throw new DAOException(e);
         }
         return whoRated;
+    }
+
+    public int selectLastId() throws DAOException {
+        return super.selectLastId(SELECT_LAST_ID);
     }
 }

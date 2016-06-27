@@ -14,9 +14,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.Part;
 import java.io.IOException;
 
-/**
- * Created by User on 29.05.2016.
- */
 public class EditProfileCommand implements ActionCommand {
     private static Logger log = LogManager.getLogger(EditProfileCommand.class);
 
@@ -30,14 +27,32 @@ public class EditProfileCommand implements ActionCommand {
             String email = request.getParameter(EMAIL);
             Part filePart = request.getPart(PICTURE);
             String path = request.getServletContext().getRealPath(request.getServletPath());
+            String previousPassword = request.getParameter(PREVIOUS_PASSWORD);
+            String password = request.getParameter(PASSWORD);
+            String repeatPassword = request.getParameter(REPEAT_PASSWORD);
+            ValidationResult result;
             User user = UserLogic.findUser(id).get();
-            user.setName(name);
-            user.setSurname(surname);
-            user.setEmail(email);
-            if (filePart != null && filePart.getSize() > 0) {
-                UserLogic.updatePhoto(user, filePart, path);
+            if (previousPassword != null && !previousPassword.isEmpty()) {
+                user = UserLogic.checkLogin(user.getLogin(), previousPassword);
             }
-            ValidationResult result = UserLogic.editUser(user);
+            if (user != null) {
+                user.setName(name);
+                user.setSurname(surname);
+                user.setEmail(email);
+                if (filePart != null && filePart.getSize() > 0) {
+                    UserLogic.updatePhoto(user, filePart, path);
+                }
+                if (password == null || password.isEmpty()) {
+                    result = UserLogic.editUser(user);
+                } else if (UserLogic.checkRepeatPassword(password, repeatPassword)) {
+                    user.setPassword(password);
+                    result = UserLogic.editUserWithPassword(user);
+                } else {
+                    result = ValidationResult.PASS_NOT_MATCH;
+                }
+            } else {
+                result = ValidationResult.PASS_NOT_MATCH;
+            }
             ProfileExecutor.executeProfile(request);
             switch (result) {
                 case ALL_RIGHT:
@@ -46,10 +61,11 @@ public class EditProfileCommand implements ActionCommand {
                 case NAME_INCORRECT:
                 case SURNAME_INCORRECT:
                 case EMAIL_INCORRECT:
-                    String errorAttr = result.name().toLowerCase();
+                case PASS_NOT_MATCH:
+                    String errorAttribute = result.name().toLowerCase();
                     page = ConfigurationManager.getProperty("path.page.edit_profile");
                     ProfileExecutor.executeInitEditProfile(request);
-                    request.setAttribute(ERROR, errorAttr);
+                    request.setAttribute(ERROR, errorAttribute);
                     break;
                 case UNKNOWN_ERROR:
                     throw new LogicException("Error occurred while editing profile.");

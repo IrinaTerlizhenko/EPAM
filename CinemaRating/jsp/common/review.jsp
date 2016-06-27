@@ -13,9 +13,9 @@
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <a href="${pageContext.request.contextPath}/controller?command=profile&id=${review.user.id}">
-                        <strong>${review.user.login}</strong>
+                        <strong><c:out value="${review.user.login}"></c:out></strong>
                     </a>
-                    <span class="text-muted"><fmt:message key="label.commented" bundle="${rb}"/> ${review.time}</span>
+                    <span class="text-muted"><fmt:message key="label.commented" bundle="${rb}"/> <c:out value="${review.time}"></c:out></span>
                     <c:if test="${user_id eq review.user.id or role eq 2}">
                         <a class="review-icon" data-toggle="modal" data-target="#delete-review-${review.user.id}" href="#">
                             <img src="${pageContext.request.contextPath}/img/delete.png" alt="delete">
@@ -49,7 +49,7 @@
                 </div>
                 <div class="panel-body">
                     <div id="review-text-${review.user.id}">
-                        ${review.text}
+                        <c:out value="${review.text}"></c:out>
                     </div>
                     <form class="unvisible" id="review-edit-${review.user.id}" method="POST" action="${pageContext.request.contextPath}/controller">
                         <input type="hidden" name="command" value="edit_review">

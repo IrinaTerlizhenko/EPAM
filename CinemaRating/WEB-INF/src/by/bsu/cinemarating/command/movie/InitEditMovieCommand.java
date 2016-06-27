@@ -10,9 +10,6 @@ import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 
-/**
- * Created by User on 13.06.2016.
- */
 public class InitEditMovieCommand implements ActionCommand {
     private static Logger log = LogManager.getLogger(InitEditMovieCommand.class);
 

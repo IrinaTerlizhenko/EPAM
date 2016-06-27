@@ -1,27 +1,35 @@
 package by.bsu.cinemarating.dao;
 
+import by.bsu.cinemarating.database.ConnectionPool;
 import by.bsu.cinemarating.database.WrapperConnection;
 import by.bsu.cinemarating.entity.Movie;
 import by.bsu.cinemarating.entity.Review;
 import by.bsu.cinemarating.entity.User;
 import by.bsu.cinemarating.exception.DAOException;
+import by.bsu.cinemarating.exception.LogicException;
+import by.bsu.cinemarating.format.FormattedTimestamp;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.*;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
+import java.sql.Date;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * Created by User on 06.06.2016.
  */
 public class ReviewDAO extends AbstractRatingDAO<Review> {
+    private static Logger log = LogManager.getLogger(ReviewDAO.class);
+
     private static final String SELECT_BY_ID =
             "SELECT review,time,login,email,reg_date,role_id,name,surname,status,photo,num_rated FROM reviews,users WHERE mid=? AND uid=? AND user_id=uid";
     private static final String SELECT_TEXT_BY_ID = "SELECT review FROM reviews WHERE mid=? AND uid=?";
     private static final String SELECT_REVIEWS_BY_MID = "SELECT uid,review,time FROM reviews WHERE mid=? ORDER BY time DESC";
     private static final String SELECT_USER_REVIEWS_WITH_MOVIES =
             "SELECT review,time,movie_id,name,description,year,country,movies.rating AS movie_rating,ref FROM reviews,movies WHERE uid=? AND mid=movie_id ORDER BY time DESC";
+    private static final String SELECT_LATEST =
+            "SELECT review,time,user_id,login,email,reg_date,role_id,users.name AS name,surname,status,photo,num_rated,movie_id,movies.name AS movie_name FROM reviews,users,movies WHERE user_id=uid AND movie_id=mid ORDER BY time DESC LIMIT ?";
 
     private static final String INSERT_REVIEW = "INSERT INTO reviews(mid,uid,review) VALUES(?,?,?)";
 
@@ -40,6 +48,9 @@ public class ReviewDAO extends AbstractRatingDAO<Review> {
             st.setInt(1, movieId);
             st.setInt(2, userId);
             rows = st.executeUpdate();
+            if (rows > 0) {
+                log.info("Review [userId = " + userId + "; movieId = " + movieId + "] deleted");
+            }
         } catch (SQLException e) {
             throw new DAOException(e);
         }
@@ -48,16 +59,6 @@ public class ReviewDAO extends AbstractRatingDAO<Review> {
 
     @Override
     public boolean create(Review entity) throws DAOException {
-        /*int rows;
-        try (PreparedStatement st = connection.prepareStatement(INSERT_REVIEW)) {
-            st.setInt(1, entity.getMid());
-            st.setInt(2, entity.getUser().getId());
-            st.setString(3, entity.getText());
-            rows = st.executeUpdate();
-        } catch (SQLException e) {
-            throw new DAOException(e);
-        }
-        return rows > 0;*/
         return create(entity.getMid(), entity.getUser().getId(), entity.getText());
     }
 
@@ -68,6 +69,9 @@ public class ReviewDAO extends AbstractRatingDAO<Review> {
             st.setInt(2, userId);
             st.setString(3, text);
             rows = st.executeUpdate();
+            if (rows > 0) {
+                log.info("Review [userId = " + userId + "; movieId = " + movieId + "; text = " + text + "] created");
+            }
         } catch (SQLException e) {
             throw new DAOException(e);
         }
@@ -75,7 +79,7 @@ public class ReviewDAO extends AbstractRatingDAO<Review> {
     }
 
     @Override
-    public Optional<Review> findEntityById(int movieId, int userId) throws DAOException { //todo
+    public Optional<Review> findEntityById(int movieId, int userId) throws DAOException {
         Review review = null;
         try (PreparedStatement st = connection.prepareStatement(SELECT_BY_ID)) {
             st.setInt(1, movieId);
@@ -84,6 +88,7 @@ public class ReviewDAO extends AbstractRatingDAO<Review> {
             if (rs.next()) {
                 String text = rs.getString(REVIEW);
                 Timestamp time = rs.getTimestamp(TIME);
+                FormattedTimestamp timestamp = new FormattedTimestamp(time);
                 String login = rs.getString(LOGIN);
                 String email = rs.getString(EMAIL);
                 Date reg_date = rs.getDate(REG_DATE);
@@ -94,7 +99,10 @@ public class ReviewDAO extends AbstractRatingDAO<Review> {
                 String photo = rs.getString(PHOTO);
                 int numRated = rs.getInt(NUM_RATED);
                 User user = new User(userId, login, email, reg_date, role_id, name, surname, status, photo, numRated);
-                review = new Review(user, movieId, text, time);
+                review = new Review(user, movieId, text, timestamp);
+                log.info("Review [userId = " + userId + "; movieId = " + movieId + "] found");
+            } else {
+                log.info("Review [userId = " + userId + "; movieId = " + movieId + "] not found");
             }
         } catch (SQLException e) {
             throw new DAOException(e);
@@ -104,16 +112,6 @@ public class ReviewDAO extends AbstractRatingDAO<Review> {
 
     @Override
     public boolean replace(Review entity) throws DAOException {
-        /*int rows;
-        try (PreparedStatement st = connection.prepareStatement(REPLACE_REVIEW)) {
-            st.setInt(1, entity.getMid());
-            st.setInt(2, entity.getUser().getId());
-            st.setString(3, entity.getText());
-            rows = st.executeUpdate();
-        } catch (SQLException e) {
-            throw new DAOException(e);
-        }
-        return rows > 0;*/
         return replace(entity.getMid(), entity.getUser().getId(), entity.getText());
     }
 
@@ -125,21 +123,16 @@ public class ReviewDAO extends AbstractRatingDAO<Review> {
                 st.setInt(1, movieId);
                 st.setInt(2, userId);
                 st.setString(3, text);
-                st.setTimestamp(4, oldReview.get().getTime());
+                st.setTimestamp(4, oldReview.get().getTime().getTimestamp());
                 result = st.executeUpdate() > 0;
             } catch (SQLException e) {
                 throw new DAOException(e);
             }
         } else {
-            /*try (PreparedStatement st = connection.prepareStatement(REPLACE_REVIEW)) {
-                st.setInt(1, movieId);
-                st.setInt(2, userId);
-                st.setString(3, text);
-                rows = st.executeUpdate();
-            } catch (SQLException e) {
-                throw new DAOException(e);
-            }*/
             result = create(movieId, userId, text);
+        }
+        if (result) {
+            log.info("Review [userId = " + userId + "; movieId = " + movieId + "] replaced");
         }
         return result;
     }
@@ -152,6 +145,7 @@ public class ReviewDAO extends AbstractRatingDAO<Review> {
             ResultSet rs = st.executeQuery();
             if (rs.next()) {
                 text = rs.getString(REVIEW);
+                log.info("Review [userId = " + userId + "; movieId = " + movieId + "] text selected");
             }
         } catch (SQLException e) {
             throw new DAOException(e);
@@ -168,15 +162,17 @@ public class ReviewDAO extends AbstractRatingDAO<Review> {
                 int userId = rs.getInt(UID);
                 String text = rs.getString(REVIEW);
                 Timestamp ts = rs.getTimestamp(TIME);
-                UserDAO udao = new UserDAO(connection);
-                User user = udao.findEntityById(userId).get();
-                Review review = new Review(user, movieId, text, ts);
+                FormattedTimestamp timestamp = new FormattedTimestamp(ts);
+                UserDAO userDAO = new UserDAO(connection);
+                User user = userDAO.findEntityById(userId).get();
+                Review review = new Review(user, movieId, text, timestamp);
                 if (userIdFirst != userId) {
                     reviews.add(review);
                 } else {
                     ((LinkedList<Review>) reviews).addFirst(review);
                 }
             }
+            log.info("Movie [id = " + movieId + "] reviews selected");
         } catch (SQLException e) {
             throw new DAOException(e);
         }
@@ -196,6 +192,7 @@ public class ReviewDAO extends AbstractRatingDAO<Review> {
             while (rs.next()) {
                 String text = rs.getString(REVIEW);
                 Timestamp time = rs.getTimestamp(TIME);
+                FormattedTimestamp timestamp = new FormattedTimestamp(time);
                 int movieId = rs.getInt(MOVIE_ID);
                 String name = rs.getString(NAME);
                 String description = rs.getString(DESCRIPTION);
@@ -204,12 +201,46 @@ public class ReviewDAO extends AbstractRatingDAO<Review> {
                 double movieRating = rs.getDouble(MOVIE_RATING);
                 String ref = rs.getString(REF);
                 Movie movie = new Movie(movieId, name, description, year, country, movieRating, ref);
-                Review review = new Review(user, movieId, text, time);
+                Review review = new Review(user, movieId, text, timestamp);
                 reviewMap.put(movie, review);
             }
+            log.info("User [id = " + user.getId() + "] reviews selected");
         } catch (SQLException e) {
             throw new DAOException(e);
         }
         return reviewMap;
+    }
+
+    public List<Review> takeLatestReviews(int size, List<String> movieNames) throws DAOException {
+        List<Review> reviewList = new ArrayList<>();
+        try (PreparedStatement st = connection.prepareStatement(SELECT_LATEST)) {
+            st.setInt(1, size);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                String text = rs.getString(REVIEW);
+                Timestamp time = rs.getTimestamp(TIME);
+                FormattedTimestamp timestamp = new FormattedTimestamp(time);
+                int userId = rs.getInt(USER_ID);
+                String login = rs.getString(LOGIN);
+                String email = rs.getString(EMAIL);
+                Date reg_date = rs.getDate(REG_DATE);
+                byte role_id = rs.getByte(ROLE_ID);
+                String name = rs.getString(NAME);
+                String surname = rs.getString(SURNAME);
+                double status = rs.getDouble(STATUS);
+                String photo = rs.getString(PHOTO);
+                int numRated = rs.getInt(NUM_RATED);
+                int movieId = rs.getInt(MOVIE_ID);
+                String movieName = rs.getString(MOVIE_NAME);
+                User user = new User(userId, login, email, reg_date, role_id, name, surname, status, photo, numRated);
+                Review review = new Review(user, movieId, text, timestamp);
+                reviewList.add(review);
+                movieNames.add(movieName);
+            }
+            log.info("Latest " + size + " reviews selected");
+        } catch (SQLException e) {
+            throw new DAOException(e);
+        }
+        return reviewList;
     }
 }

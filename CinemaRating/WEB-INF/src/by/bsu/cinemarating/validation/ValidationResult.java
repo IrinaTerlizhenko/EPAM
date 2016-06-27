@@ -10,6 +10,7 @@ package by.bsu.cinemarating.validation;
 public enum ValidationResult {
     ALL_RIGHT,
     LOGIN_PASS_INCORRECT,
+    PASS_INCORRECT,
     EMAIL_INCORRECT,
     PASS_NOT_MATCH,
     LOGIN_NOT_UNIQUE,

@@ -23,50 +23,67 @@
                     <fmt:message key="label.edit_movie" bundle="${rb}"/>
                 </h3>
                 <div class="form-group">
-                    <label for="movie_name" class="compulsory control-label">
+                    <label for="movie_name" class="col-sm-2 compulsory control-label">
                         <fmt:message key="label.movie_name" bundle="${rb}"/>
                     </label>
-                    <input id="movie_name" name="movie_name" class="form-control" type="text" required minlength="1" maxlength="50"
-                           value="${movie.name}"
-                           pattern=".{1,50}"
-                           placeholder=<fmt:message key="label.movie_name" bundle="${rb}"/>>
+                    <div class="col-sm-10">
+                        <input id="movie_name" name="movie_name" class="form-control" type="text" required minlength="1" maxlength="50"
+                               value="<c:out value="${movie.name}"></c:out>"
+                               pattern=".{1,50}"
+                               placeholder=<fmt:message key="label.movie_name" bundle="${rb}"/>>
+                    </div>
                 </div>
                 <div class="form-group">
-                    <label class="compulsory control-label">
+                    <label class="col-sm-2 compulsory control-label">
                         <fmt:message key="label.description" bundle="${rb}"/>
                     </label>
-                            <textarea id="description" name="description" class="form-control" required maxlength="1000"
-                                      placeholder=<fmt:message key="label.description" bundle="${rb}"/>>${movie.description}</textarea>
+                    <div class="col-sm-10">
+                        <textarea id="description" name="description" class="form-control" required maxlength="1000"
+                                  placeholder=<fmt:message key="label.description" bundle="${rb}"/>><c:out value="${movie.description}"></c:out></textarea>
+                    </div>
                 </div>
                 <div class="form-group">
-                    <label for="year" class="compulsory control-label">
+                    <label for="year" class="col-sm-2 compulsory control-label">
                         <fmt:message key="label.year" bundle="${rb}"/>
                     </label>
-                    <input id="year" name="year" class="form-control" type="number" required min="1888"
-                           value="${movie.year}"
-                           pattern="[1-9]\d{3}"
-                           placeholder=<fmt:message key="label.year" bundle="${rb}"/>>
+                    <div class="col-sm-10">
+                        <input id="year" name="year" class="form-control" type="number" required min="1888"
+                               value="<c:out value="${movie.year}"></c:out>"
+                               pattern="[1-9]\d{3}"
+                               placeholder=<fmt:message key="label.year" bundle="${rb}"/>>
+                    </div>
                 </div>
                 <div class="form-group">
-                    <label for="country" class="compulsory control-label">
+                    <label for="country" class="col-sm-2 compulsory control-label">
                         <fmt:message key="label.country" bundle="${rb}"/>
                     </label>
-                    <input id="country" name="country" class="form-control" type="text" required minlength="1" maxlength="100"
-                           value="${movie.country}"
-                           pattern="([A-Z][A-Za-z]*(, [A-Z][A-Za-z]*)*)|([А-Я][А-Яа-я]*(, [А-Я][А-Яа-я]*)*)"
-                           placeholder=<fmt:message key="label.country" bundle="${rb}"/>>
+                    <div class="col-sm-10">
+                        <input id="country" name="country" class="form-control" type="text" required minlength="1" maxlength="100"
+                               value="<c:out value="${movie.country}"></c:out>"
+                               pattern="([A-Z][A-Za-z]*(, [A-Z][A-Za-z]*)*)|([А-Я][А-Яа-я]*(, [А-Я][А-Яа-я]*)*)"
+                               placeholder=<fmt:message key="label.country" bundle="${rb}"/>>
+                    </div>
                 </div>
                 <div class="form-group">
-                    <label for="picture" class="control-label">
-                        <fmt:message key="label.picture" bundle="${rb}"/>
-                    </label>
-                    <img src="${pageContext.request.contextPath}/${movie.ref}" alt="no picture">
-                    <input id="picture" name="picture" class="form-control" type="file" accept="image/*,image/jpeg,image/png">
+                    <div class="col-sm-2">
+                        <img src="${pageContext.request.contextPath}/${movie.ref}" alt="no picture">
+                    </div>
+                    <div class="col-sm-10">
+                        <span class="btn btn-success btn-file">
+                            <i class="fa fa-plus"> </i>
+                            <span>
+                                <fmt:message key="label.picture" bundle="${rb}"/>
+                            </span>
+                            <input id="picture" name="picture" type="file" accept="image/*,image/jpeg,image/png,image/bmp,image/jpg">
+                        </span>
+                    </div>
                 </div>
-                <input type="submit" class="btn btn-success" value=<fmt:message key="button.edit_movie" bundle="${rb}"/>>
-                <a role="button" href="${pageContext.request.contextPath}/controller?command=show_movie&movie_id=${movie.id}" class="btn btn-default">
-                    <fmt:message key="button.cancel" bundle="${rb}"/>
-                </a>
+                <div class="col-sm-offset-3">
+                    <input type="submit" class="btn btn-success" value=<fmt:message key="button.edit_movie" bundle="${rb}"/>>
+                    <a role="button" href="${pageContext.request.contextPath}/controller?command=show_movie&movie_id=${movie.id}" class="btn btn-default">
+                        <fmt:message key="button.cancel" bundle="${rb}"/>
+                    </a>
+                </div>
             </form>
             <%@ include file="common/footer.jsp"%>
         </div>

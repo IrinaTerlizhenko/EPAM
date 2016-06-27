@@ -8,48 +8,69 @@
     <head>
         <title><fmt:message key="title.ban" bundle="${rb}"/></title>
         <link type="text/css" rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
+        <link type="text/css" rel="stylesheet" href="${pageContext.request.contextPath}/css/bootstrap-datetimepicker.css">
+        <link rel='stylesheet' href="${pageContext.request.contextPath}/css/bootstrap-glyphicons.css" type='text/css' media='all'>
     </head>
     <body>
         <c:set var="page" value="path.page.ban" scope="session"/>
         <%@ include file="common/menu.jsp"%>
 
         <div class="wrapper container">
-            <form class="content form-horizontal" method="POST" action="${pageContext.request.contextPath}/controller">
+            <form role="form" class="content form-horizontal" method="POST" action="${pageContext.request.contextPath}/controller">
                 <input type="hidden" name="command" value="ban"/>
-                <input type="hidden" name="id" value="${user.id}"/>
+                <input type="hidden" name="id" value="<c:out value="${user.id}"></c:out>"/>
                 <div class="form-group">
-                    <label for="user" class="control-label">
+                    <label for="user" class="col-sm-2 control-label">
                         <fmt:message key="ban.user" bundle="${rb}"/>
                     </label>
-                    <input id="user" type="text" class="form-control disabled" maxlength="30" value="${user.login}"/>
+                    <div class="col-sm-10">
+                        <input id="user" type="text" class="form-control" maxlength="30" value="<c:out value="${user.login}"></c:out>" disabled/>
+                    </div>
                 </div>
                 <div class="form-group">
-                    <label for="type" class="control-label">
+                    <label for="type" class="col-sm-2 control-label">
                         <fmt:message key="ban.type" bundle="${rb}"/>
                     </label>
-                    <select id="type" name="type" class="form-control">
-                        <option id="ABUSE" value="ABUSE">ABUSE</option>
-                        <option id="SPAM" value="SPAM">SPAM</option>
-                    </select>
+                    <div class="col-sm-10">
+                        <select id="type" name="type" class="form-control">
+                            <option id="ABUSE" value="ABUSE">ABUSE</option>
+                            <option id="SPAM" value="SPAM">SPAM</option>
+                        </select>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="time" class="control-label">
+               <div class="form-group">
+                    <label for="time" class="col-sm-2 control-label">
                         <fmt:message key="ban.time" bundle="${rb}"/>
                     </label>
-                    <input id="time" type="date" name="expiration" class="form-control"/> <!-- todo -->
+                    <div class="col-sm-10">
+                        <div class='input-group date' id='datetimepicker1'>
+                            <input id="time" type='text' name="expiration" class="form-control">
+                            <span class="input-group-addon">
+                                <span class="glyphicon glyphicon-calendar"></span>
+                            </span>
+                        </div>
+                    </div>
                 </div>
                 <div class="form-group">
-                    <label for="reason" class="control-label">
+                    <label for="reason" class="col-sm-2 control-label">
                         <fmt:message key="ban.reason" bundle="${rb}"/>
                     </label>
-                    <textarea id="reason" name="reason" class="form-control" maxlength="300"></textarea>
+                    <div class="col-sm-10">
+                        <textarea id="reason" name="reason" class="form-control" maxlength="300"></textarea>
+                    </div>
                 </div>
-                <input type="submit" class="btn btn-warning" value=<fmt:message key="button.ban" bundle="${rb}"/>>
-                <a class="btn btn-default" href="${pageContext.request.contextPath}/controller?command=profile&id=${user.id}" role="button">
-                    <fmt:message key="button.cancel" bundle="${rb}"/>
-                </a>
+                <div class="col-sm-offset-3">
+                    <input type="submit" class="btn btn-warning" value=<fmt:message key="button.ban" bundle="${rb}"/>>
+                    <a class="btn btn-default" href="${pageContext.request.contextPath}/controller?command=profile&id=${user.id}" role="button">
+                        <fmt:message key="button.cancel" bundle="${rb}"/>
+                    </a>
+                </div>
             </form>
             <%@ include file="common/footer.jsp"%>
         </div>
+
+        <script type="text/javascript" src="${pageContext.request.contextPath}/js/moment.js"></script>
+        <script type="text/javascript" src="${pageContext.request.contextPath}/js/bootstrap-datetimepicker.min.js"></script>
+        <script type="text/javascript" src="${pageContext.request.contextPath}/js/cinemarating.js"></script>
     </body>
 </html>

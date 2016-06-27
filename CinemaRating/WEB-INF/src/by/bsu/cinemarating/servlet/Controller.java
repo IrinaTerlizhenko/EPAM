@@ -3,6 +3,8 @@ package by.bsu.cinemarating.servlet;
 import by.bsu.cinemarating.command.ActionCommand;
 import by.bsu.cinemarating.command.ChangeLanguageCommand;
 import by.bsu.cinemarating.command.factory.ActionFactory;
+import by.bsu.cinemarating.command.movie.AddMovieCommand;
+import by.bsu.cinemarating.command.session.RegisterCommand;
 import by.bsu.cinemarating.database.ConnectionPool;
 import by.bsu.cinemarating.memento.Caretaker;
 import by.bsu.cinemarating.memento.MementoRequest;
@@ -13,6 +15,7 @@ import org.apache.logging.log4j.Logger;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -20,8 +23,11 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @WebServlet("/controller")
+@MultipartConfig
 public class Controller extends HttpServlet {
     private static Logger log = LogManager.getLogger(Controller.class);
+
+    private static final String FORM = "form";
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -39,9 +45,16 @@ public class Controller extends HttpServlet {
             throws ServletException, IOException {
         ActionFactory client = new ActionFactory();
         ActionCommand command = client.defineCommand(request);
+
+        FormType formType = FormType.valueOf(((String) request.getSession().getAttribute(FORM)).toUpperCase());
+        /* F5 prevention */
+        if ((FormType.REGISTER.equals(formType) && !(command instanceof RegisterCommand)) ||
+                (FormType.ADD_MOVIE.equals(formType) && !(command instanceof AddMovieCommand))) {
+            request.getSession().setAttribute(FORM, FormType.NONE.name().toLowerCase());
+        }
+
         String page = command.execute(request);
         if (page != null) {
-            ////////////////////////////////////////////todo
             MementoRequest memento = (MementoRequest) request.getSession().getAttribute("memento");
             if (memento == null) {
                 memento = new MementoRequest();
@@ -53,7 +66,7 @@ public class Controller extends HttpServlet {
             } else {
                 caretaker.fill(request);
             }
-            ////////////////////////////////////////////
+
             RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(page);
             dispatcher.forward(request, response);
         } else {
@@ -67,6 +80,6 @@ public class Controller extends HttpServlet {
     @Override
     public void destroy() {
         super.destroy();
-        ConnectionPool.getInstance().closePool(); //todo
+        ConnectionPool.getInstance().closePool();
     }
 }

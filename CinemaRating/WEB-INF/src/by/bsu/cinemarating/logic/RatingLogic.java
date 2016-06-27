@@ -18,10 +18,6 @@ import java.util.LinkedHashMap;
 import java.util.Optional;
 
 /**
- * Created with IntelliJ IDEA.
- * User: Irina
- * Date: 24.04.16
- * Time: 6:48
  * A service layer class implementing all the logic concerning ratings.
  */
 public class RatingLogic {
@@ -68,7 +64,7 @@ public class RatingLogic {
             optConnection = ConnectionPool.getInstance().takeConnection();
             WrapperConnection connection = optConnection.orElseThrow(SQLException::new);
             RatingDAO ratingDAO = new RatingDAO(connection);
-            ArrayList<Double> ratings = ratingDAO.selectRatingsExceptUserId(userId, movieId); // todo 1
+            ArrayList<Double> ratings = ratingDAO.selectRatingsExceptUserId(userId, movieId);
             int count = ratings.size() + 1;
             double sum = ratings.stream().mapToDouble(e -> e).sum() + newRating;
             ReviewDAO reviewDAO = new ReviewDAO(connection);
@@ -104,7 +100,7 @@ public class RatingLogic {
                     if (count == COUNT_TO_UPDATE_STATUS) {
                         userDAO.updateNumRated(uid, ++numRated);
                     }
-                    int ratingThisMovie = movieDAO.selectRating(movieId, uid); // todo 1
+                    int ratingThisMovie = movieDAO.selectRating(movieId, uid);
                     if (count > COUNT_TO_UPDATE_STATUS) {
                         status += (Math.abs(ratingThisMovie - oldMovieRating) - Math.abs(ratingThisMovie - newMovieRating)) / numRated;
                     } else { // count == COUNT_TO_UPDATE_STATUS
@@ -131,6 +127,13 @@ public class RatingLogic {
         }
     }
 
+    /**
+     * Retrieves all ratings of a specific user.
+     *
+     * @param userId id of the user whose ratings to retrieve
+     * @return map with all movies, rated by the user, and their ratings
+     * @throws LogicException if any exceptions occurred on the DAO or SQL layer
+     */
     public static LinkedHashMap<Movie, Byte> takeUserRatings(int userId) throws LogicException {
         LinkedHashMap<Movie, Byte> ratingMap;
         Optional<WrapperConnection> optConnection = Optional.empty();

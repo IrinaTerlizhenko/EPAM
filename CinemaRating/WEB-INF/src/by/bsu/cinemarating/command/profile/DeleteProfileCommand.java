@@ -9,9 +9,6 @@ import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 
-/**
- * Created by User on 03.06.2016.
- */
 public class DeleteProfileCommand implements ActionCommand {
     private static Logger log = LogManager.getLogger(DeleteProfileCommand.class);
 

@@ -2,9 +2,6 @@ package by.bsu.cinemarating.entity;
 
 import java.sql.Timestamp;
 
-/**
- * Created by User on 30.05.2016.
- */
 public class Ban extends Entity {
     int userId;
     BanType type;
@@ -52,5 +49,16 @@ public class Ban extends Entity {
 
     public void setReason(String reason) {
         this.reason = reason;
+    }
+
+    @Override
+    public String toString() {
+        return "Ban{" +
+                "id='" + getId() + '\'' +
+                "userId=" + userId +
+                ", type=" + type +
+                ", expiration=" + expiration +
+                ", reason='" + reason + '\'' +
+                '}';
     }
 }

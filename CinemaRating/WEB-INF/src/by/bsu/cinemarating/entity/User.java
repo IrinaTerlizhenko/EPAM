@@ -2,13 +2,6 @@ package by.bsu.cinemarating.entity;
 
 import java.sql.Date;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Irina
- * Date: 12.04.16
- * Time: 5:10
- * To change this template use File | Settings | File Templates.
- */
 public class User extends Entity {
     private String login;
     private String email;
@@ -115,5 +108,21 @@ public class User extends Entity {
 
     public void setNumRated(int numRated) {
         this.numRated = numRated;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id='" + getId() + '\'' +
+                "login='" + login + '\'' +
+                ", email='" + email + '\'' +
+                ", regDate=" + regDate +
+                ", roleID=" + roleID +
+                ", name='" + name + '\'' +
+                ", surname='" + surname + '\'' +
+                ", status=" + status +
+                ", photo='" + photo + '\'' +
+                ", numRated=" + numRated +
+                '}';
     }
 }

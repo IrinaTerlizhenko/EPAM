@@ -4,6 +4,8 @@ import by.bsu.cinemarating.database.WrapperConnection;
 import by.bsu.cinemarating.entity.Ban;
 import by.bsu.cinemarating.entity.BanType;
 import by.bsu.cinemarating.exception.DAOException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -21,9 +23,12 @@ import java.util.Optional;
  * To change this template use File | Settings | File Templates.
  */
 public class BanDAO extends AbstractDAO<Ban> {
+    private static Logger log = LogManager.getLogger(BanDAO.class);
+
     private static final String SELECT_ALL = "SELECT ban_id,user_id,type,expiration,reason FROM bans";
     private static final String SELECT_BY_ID = "SELECT user_id,type,expiration,reason FROM bans WHERE ban_id=?";
-    private static final String SELECT_BY_USER_ID = "SELECT ban_id,type,expiration,reason FROM bans WHERE user_id=?";
+    private static final String SELECT_BY_USER_ID = "SELECT expiration FROM bans WHERE user_id=?";
+    private static final String SELECT_LAST_ID = "SELECT MAX(ban_id) AS id FROM bans";
 
     private static final String INSERT_BAN = "INSERT INTO bans(user_id,type,expiration,reason) VALUES(?,?,?,?)";
 
@@ -49,6 +54,7 @@ public class BanDAO extends AbstractDAO<Ban> {
                 Ban ban = new Ban(id, userId, BanType.valueOf(type.toUpperCase()), expiration, reason);
                 allBans.add(ban);
             }
+            log.info("All bans retrieved");
         } catch (SQLException e) {
             throw new DAOException(e);
         }
@@ -67,6 +73,9 @@ public class BanDAO extends AbstractDAO<Ban> {
                 Timestamp expiration = rs.getTimestamp(EXPIRATION);
                 String reason = rs.getString(REASON);
                 ban = new Ban(id, userId, BanType.valueOf(type.toUpperCase()), expiration, reason);
+                log.info("Ban [id = " + id + "] found");
+            } else {
+                log.info("Ban [id = " + id + "] not found");
             }
         } catch (SQLException e) {
             throw new DAOException(e);
@@ -80,6 +89,9 @@ public class BanDAO extends AbstractDAO<Ban> {
         try (PreparedStatement st = connection.prepareStatement(DELETE_BY_ID)) {
             st.setInt(1, id);
             rows = st.executeUpdate();
+            if (rows > 0) {
+                log.info("Ban id = " + id + " deleted");
+            }
         } catch (SQLException e) {
             throw new DAOException(e);
         }
@@ -98,6 +110,7 @@ public class BanDAO extends AbstractDAO<Ban> {
             if (res > 0) {
                 created = true;
                 updateId(entity);
+                log.info("Ban " + entity + " created");
             }
         } catch (SQLException e) {
             throw new DAOException(e);
@@ -114,22 +127,32 @@ public class BanDAO extends AbstractDAO<Ban> {
             st.setTimestamp(3, entity.getExpiration());
             st.setString(4, entity.getReason());
             st.setInt(5, entity.getId());
-            st.executeUpdate();
+            int updated = st.executeUpdate();
+            if (updated > 0) {
+                log.info("Ban " + entity + " updated");
+            }
         } catch (SQLException e) {
             throw new DAOException(e);
         }
         return ban;
     }
 
-    public boolean isBanned(int userId) throws DAOException {
-        boolean banned;
+    public List<Timestamp> selectBanExpirations(int userId) throws DAOException {
+        List<Timestamp> expirations = new ArrayList<>();
         try (PreparedStatement st = connection.prepareStatement(SELECT_BY_USER_ID)) {
             st.setInt(1, userId);
             ResultSet rs = st.executeQuery();
-            banned = rs.next();
+            while (rs.next()) {
+                expirations.add(rs.getTimestamp(EXPIRATION));
+            }
+            log.info("Ban expirations on [userId = " + userId + "] selected");
         } catch (SQLException e) {
             throw new DAOException(e);
         }
-        return banned;
+        return expirations;
+    }
+
+    public int selectLastId() throws DAOException {
+        return super.selectLastId(SELECT_LAST_ID);
     }
 }

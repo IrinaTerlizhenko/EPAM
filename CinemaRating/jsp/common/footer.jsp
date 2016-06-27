@@ -3,14 +3,19 @@
 
 <footer class="footer-distributed footer">
     <div class="footer-left">
-        <!-- <h3>Company<span>logo</span></h3> -->
-        <img src="${pageContext.request.contextPath}/img/CinemaRating_small.png" alt="<fmt:message key="footer.project" bundle="${rb}"/>">
+        <img src="${pageContext.request.contextPath}/img/CinemaRating_small.png" alt=<fmt:message key="footer.project" bundle="${rb}"/>>
         <p class="footer-links">
-            <a href="${pageContext.request.contextPath}/controller?command=redirect&nextPage=path.page.main">Home</a>
+            <a href="${pageContext.request.contextPath}/controller?command=redirect&nextPage=path.page.main">
+                <fmt:message key="menu.home" bundle="${rb}"/>
+            </a>
             |
-            <a href="#">About</a>
+            <a href="#">
+                <fmt:message key="footer.about" bundle="${rb}"/>
+            </a>
             |
-            <a href="#">Contact</a>
+            <a href="#">
+                <fmt:message key="footer.contact" bundle="${rb}"/>
+            </a>
         </p>
         <p class="footer-company-name"><fmt:message key="footer.company" bundle="${rb}"/> &copy; <fmt:message key="footer.year" bundle="${rb}"/></p>
     </div>
@@ -33,11 +38,11 @@
             <span><fmt:message key="footer.about" bundle="${rb}"/></span>
             <fmt:message key="footer.info" bundle="${rb}"/>
         </p>
-        <div class="footer-icons">
+       <!-- <div class="footer-icons">
             <a href="#"><i class="fa fa-facebook"></i></a>
             <a href="#"><i class="fa fa-twitter"></i></a>
             <a href="#"><i class="fa fa-linkedin"></i></a>
             <a href="#"><i class="fa fa-github"></i></a>
-        </div>
+        </div> -->
     </div>
 </footer>

@@ -4,6 +4,8 @@ import by.bsu.cinemarating.database.WrapperConnection;
 import by.bsu.cinemarating.entity.Movie;
 import by.bsu.cinemarating.entity.Rating;
 import by.bsu.cinemarating.exception.DAOException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -19,7 +21,10 @@ import java.util.Optional;
  * Time: 11:08
  * To change this template use File | Settings | File Templates.
  */
-public class RatingDAO extends AbstractRatingDAO<Rating> {     //todo
+public class RatingDAO extends AbstractRatingDAO<Rating> {
+    private static Logger log = LogManager.getLogger(RatingDAO.class);
+
+    private static final String SELECT_BY_ID = "SELECT rating FROM ratings WHERE mid=? AND uid=?";
     private static final String SELECT_RATINGS = "SELECT uid,rating FROM ratings WHERE mid=?";
     private static final String SELECT_USER_RATINGS_WITH_MOVIES =
             "SELECT ratings.rating AS rating,movie_id,name,description,year,country,movies.rating AS movie_rating,ref FROM ratings,movies WHERE uid=? AND mid=movie_id ORDER BY ratings.rating DESC";
@@ -42,6 +47,9 @@ public class RatingDAO extends AbstractRatingDAO<Rating> {     //todo
             st.setInt(2, entity.getUserId());
             st.setByte(3, entity.getRating());
             rows = st.executeUpdate();
+            if (rows > 0) {
+                log.info("Rating " + entity + " created");
+            }
         } catch (SQLException e) {
             throw new DAOException(e);
         }
@@ -55,6 +63,9 @@ public class RatingDAO extends AbstractRatingDAO<Rating> {     //todo
             st.setInt(1, movieId);
             st.setInt(2, userId);
             rows = st.executeUpdate();
+            if (rows > 0) {
+                log.info("Rating [userId = " + userId + "; movieId = " + movieId + "] deleted");
+            }
         } catch (SQLException e) {
             throw new DAOException(e);
         }
@@ -62,8 +73,23 @@ public class RatingDAO extends AbstractRatingDAO<Rating> {     //todo
     }
 
     @Override
-    public Optional<Rating> findEntityById(int mid, int uid) throws DAOException {
-        return null; // todo
+    public Optional<Rating> findEntityById(int movieId, int userId) throws DAOException {
+        Rating rating = null;
+        try (PreparedStatement st = connection.prepareStatement(SELECT_BY_ID)) {
+            st.setInt(1, movieId);
+            st.setInt(2, userId);
+            ResultSet rs = st.executeQuery();
+            if (rs.next()) {
+                byte ratingValue = rs.getByte(RATING);
+                rating = new Rating(movieId, userId, ratingValue);
+                log.info("Rating [userId = " + userId + "; movieId = " + movieId + "] found");
+            } else {
+                log.info("Rating [userId = " + userId + "; movieId = " + movieId + "] not found");
+            }
+        } catch (SQLException e) {
+            throw new DAOException(e);
+        }
+        return Optional.ofNullable(rating);
     }
 
     public ArrayList<Double> selectRatingsExceptUserId(int userId, int movieId) throws DAOException {
@@ -94,6 +120,9 @@ public class RatingDAO extends AbstractRatingDAO<Rating> {     //todo
             st.setInt(2, entity.getMovieId());
             st.setDouble(3, entity.getRating());
             rows = st.executeUpdate();
+            if (rows > 0) {
+                log.info("Rating " + entity + " replaced");
+            }
         } catch (SQLException e) {
             throw new DAOException(e);
         }
@@ -117,6 +146,7 @@ public class RatingDAO extends AbstractRatingDAO<Rating> {     //todo
                 Movie movie = new Movie(movieId, name, description, year, country, movieRating, ref);
                 ratingMap.put(movie, rating);
             }
+            log.info("Ratings of user [id = " + userId + "] selected");
         } catch (SQLException e) {
             throw new DAOException(e);
         }

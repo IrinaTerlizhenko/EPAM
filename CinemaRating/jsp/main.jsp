@@ -19,23 +19,72 @@
 
         <div class="wrapper container">
             <div class="content">
-                <h3>
-                    <fmt:message key="title.welcome" bundle="${rb}"/>
-                </h3>
-                <br/>
-                ${user_id}, <fmt:message key="label.hello" bundle="${rb}"/>!
-                <br/>
+                <img src="${pageContext.request.contextPath}/img/CinemaRating_large.png">
 
-                <div class="slider">
-                    <ul>
-                        <c:forEach var="movie" items="${movies}">
-                            <li>
-                                <a href="${pageContext.request.contextPath}/controller?command=show_movie&movie_id=${movie.id}">
-                                    <img src="${pageContext.request.contextPath}/${movie.ref}" alt="${movie.name}">
-                                </a>
-                            </li>
-                        </c:forEach>
-                    </ul>
+                <div class="col-sm-4">
+                    <h2><fmt:message key="header.latest5movies" bundle="${rb}"/></h2>
+                    <div class="slider">
+                        <ul>
+                            <c:forEach var="movie" items="${latest_movies}">
+                                <li>
+                                    <a href="${pageContext.request.contextPath}/controller?command=show_movie&movie_id=${movie.id}">
+                                        <img src="${pageContext.request.contextPath}/${movie.ref}" alt="">
+                                    </a>
+                                </li>
+                            </c:forEach>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="col-sm-4">
+                    <h2><fmt:message key="header.top5movies" bundle="${rb}"/></h2>
+                    <div class="slider">
+                        <ul>
+                            <c:forEach var="movie" items="${top_movies}">
+                                <li>
+                                    <a href="${pageContext.request.contextPath}/controller?command=show_movie&movie_id=${movie.id}">
+                                        <img src="${pageContext.request.contextPath}/${movie.ref}" alt="">
+                                    </a>
+                                </li>
+                            </c:forEach>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="col-sm-4">
+                    <h2><fmt:message key="header.latest3reviews" bundle="${rb}"/></h2>
+                    <c:forEach var="review" items="${reviews}" varStatus="status">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-sm-1">
+                                    <div class="thumbnail">
+                                        <a href="${pageContext.request.contextPath}/controller?command=profile&id=${review.user.id}">
+                                            <img class="img-responsive user-photo" src="${pageContext.request.contextPath}/${review.user.photo}" alt="">
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="col-sm-3 review-main-info">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading">
+                                            <a href="${pageContext.request.contextPath}/controller?command=profile&id=${review.user.id}">
+                                                <strong><c:out value="${review.user.login}"></c:out></strong>
+                                            </a>
+                                            <span class="text-muted"><fmt:message key="label.commented_on_movie" bundle="${rb}"/>
+                                                <a href="${pageContext.request.contextPath}/controller?command=show_movie&movie_id=${review.mid}">
+                                                    <strong><c:out value="${movies[status.index]}"></c:out></strong>
+                                                </a> <c:out value="${review.time}"></c:out>
+                                            </span>
+                                        </div>
+                                        <div class="panel-body">
+                                            <div id="review-text-${review.user.id}">
+                                                <c:out value="${review.text}"></c:out>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </c:forEach>
                 </div>
             </div>
             <%@ include file="common/footer.jsp"%>

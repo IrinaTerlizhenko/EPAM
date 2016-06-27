@@ -8,10 +8,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
- * Created with IntelliJ IDEA.
- * User: Irina
- * Date: 23.04.16
- * Time: 7:09
  * Filter to forbid unauthorized access to the application. Allows access only according to the application's commands
  * and hyperlinks.
  */

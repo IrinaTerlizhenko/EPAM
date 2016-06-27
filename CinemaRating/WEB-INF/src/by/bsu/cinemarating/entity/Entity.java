@@ -7,7 +7,7 @@ package by.bsu.cinemarating.entity;
  * Time: 3:52
  * Any expert entity with one identifier.
  */
-public abstract class Entity /*implements Serializable, Cloneable*/ {
+public abstract class Entity {
     private int id;
 
     public Entity() {
@@ -23,5 +23,12 @@ public abstract class Entity /*implements Serializable, Cloneable*/ {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    @Override
+    public String toString() {
+        return "Entity{" +
+                "id=" + id +
+                '}';
     }
 }

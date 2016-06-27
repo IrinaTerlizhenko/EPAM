@@ -13,9 +13,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.Part;
 import java.io.IOException;
 
-/**
- * Created by User on 13.06.2016.
- */
 public class EditMovieCommand implements ActionCommand {
     private static Logger log = LogManager.getLogger(InitEditMovieCommand.class);
 

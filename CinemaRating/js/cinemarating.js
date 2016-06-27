@@ -41,3 +41,21 @@ function deactivateEdit(userId) {
         });
     });
 })(jQuery);
+
+function activateEditStatus() {
+    var text = document.getElementById("status");
+    $(text).hide();
+    var edit = document.getElementById("edit-status");
+    $(edit).show();
+}
+
+function deactivateEditStatus() {
+    var text = document.getElementById("status");
+    $(text).show();
+    var edit = document.getElementById("edit-status");
+    $(edit).hide();
+}
+
+$(function () {
+    $('#datetimepicker1').datetimepicker();
+});

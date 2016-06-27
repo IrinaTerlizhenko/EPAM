@@ -11,9 +11,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * Created by User on 12.06.2016.
- */
 public class AllUsersCommand implements ActionCommand {
     private static Logger log = LogManager.getLogger(AllUsersCommand.class);
 

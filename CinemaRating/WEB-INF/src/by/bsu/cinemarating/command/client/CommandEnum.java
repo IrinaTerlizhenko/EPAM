@@ -48,11 +48,6 @@ public enum CommandEnum {
             this.command = new RateCommand();
         }
     },
-    INIT_RATING {
-        {
-            this.command = new InitRatingCommand();
-        }
-    },
     PROFILE {
         {
             this.command = new ProfileCommand();
@@ -141,6 +136,11 @@ public enum CommandEnum {
     EDIT_REVIEW {
         {
             this.command = new EditReviewCommand();
+        }
+    },
+    EDIT_STATUS {
+        {
+            this.command = new EditStatusCommand();
         }
     };
     ActionCommand command;

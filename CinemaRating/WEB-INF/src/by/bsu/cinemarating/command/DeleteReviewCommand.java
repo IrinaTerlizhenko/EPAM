@@ -10,9 +10,6 @@ import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 
-/**
- * Created by User on 06.06.2016.
- */
 public class DeleteReviewCommand implements ActionCommand {
     private static Logger log = LogManager.getLogger(DeleteReviewCommand.class);
 

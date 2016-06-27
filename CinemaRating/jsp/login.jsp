@@ -18,7 +18,8 @@
                     <label for="login" class="control-label compulsory">
                         <fmt:message key="label.login" bundle="${rb}"/>
                     </label>
-                    <input id="login" type="text" name="login" class="form-control" value="${login}" required minlength="1" maxlength="30"
+                    <input id="login" type="text" name="login" class="form-control" required minlength="1" maxlength="30"
+                           value="<c:out value="${login}"></c:out>"
                            pattern="(\w|\d){1,30}"
                            placeholder=<fmt:message key="placeholder.login" bundle="${rb}"/>>
                 </div>
@@ -26,7 +27,8 @@
                     <label for="password" class="control-label compulsory">
                         <fmt:message key="label.password" bundle="${rb}"/>
                     </label>
-                    <input id="password" type="password" name="password" class="form-control" value="${password}" required minlength="1" maxlength="20"
+                    <input id="password" type="password" name="password" class="form-control" required minlength="1" maxlength="20"
+                           value="<c:out value="${password}"></c:out>"
                            pattern="(\w|\d){3,20}">
                 </div>
                 <span>${errorLoginPassMessage}</span>
@@ -36,7 +38,7 @@
                 <span>${nullPage}</span>
                 <br/>
                 <input class="btn btn-primary btn-block" type="submit" value=<fmt:message key="button.login" bundle="${rb}"/>>
-                <a class="btn btn-default btn-block" href="${pageContext.request.contextPath}/controller?command=redirect&nextPage=path.page.register" role="button>">
+                <a class="btn btn-default btn-block" href="${pageContext.request.contextPath}/controller?command=redirect&nextPage=path.page.register" role="button">
                     <fmt:message key="label.register" bundle="${rb}"/>
                 </a>
             </form>

@@ -24,7 +24,7 @@
                         <div class="modal-dialog">
                             <div class="modal-content">
                                 <div class="modal-header"><button class="close" type="button" data-dismiss="modal">×</button>
-                                    <h4 class="modal-title">${user.login}</h4>
+                                    <h4 class="modal-title"><c:out value="${user.login}"></c:out></h4>
                                 </div>
                                 <div class="modal-body">
                                     <img src="${pageContext.request.contextPath}/${user.photo}" alt="">
@@ -83,11 +83,33 @@
                     </c:choose>
                 </div>
                 <div class="col-sm-5 text-container">
-                    <h2>${user.login}</h2>
+                    <h2><c:out value="${user.login}"></c:out></h2>
                     <h4 class="sub-text">
-                        <fmt:message key="label.status" bundle="${rb}"/>: ${user.status}
-                        <br/>
-                        <fmt:message key="label.num_rated" bundle="${rb}"/>: ${user.numRated}
+                        <ctg:admin>
+                            <a class="col-sm-1" onclick="activateEditStatus()">
+                                <img class="control" src="${pageContext.request.contextPath}/img/edit_status.png" alt="edit">
+                            </a>
+                        </ctg:admin>
+                        <div class="col-sm-2">
+                            <fmt:message key="label.status" bundle="${rb}"/>:
+                        </div>
+                        <div id="status" class="col-sm-9">
+                            <c:out value="${user.status}"></c:out>
+                        </div>
+                        <form id="edit-status" class="col-sm-9 unvisible form-inline" method="POST" action="${pageContext.request.contextPath}/controller">
+                            <input type="hidden" name="command" value="edit_status">
+                            <input type="hidden" name="user_id" value="${user.id}">
+                            <div class="form-group">
+                                <input class="form-control inline-control" type="number" name="status" min="0" max="10"
+                                       value="<c:out value="${user.status}"></c:out>">
+                            </div>
+                            <input class="btn btn-success" type="submit" value=<fmt:message key="button.edit" bundle="${rb}"/>>
+                            <a role="button" href="#" class="btn btn-default" onclick="deactivateEditStatus()">
+                                <fmt:message key="button.cancel" bundle="${rb}"/>
+                            </a>
+                        </form>
+                        <br class="skip"/>
+                        <fmt:message key="label.num_rated" bundle="${rb}"/>: <c:out value="${user.numRated}"></c:out>
                     </h4>
                     <table class="info table-hover">
                         <tbody>
@@ -95,31 +117,31 @@
                                 <td class="type">
                                     <fmt:message key="profile.login" bundle="${rb}"/>
                                 </td>
-                                <td>${user.login}</td>
+                                <td><c:out value="${user.login}"></c:out></td>
                             </tr>
                             <tr>
                                 <td class="type">
                                     <fmt:message key="profile.name" bundle="${rb}"/>
                                 </td>
-                                <td>${user.name}</td>
+                                <td><c:out value="${user.name}"></c:out></td>
                             </tr>
                             <tr>
                                 <td class="type">
                                     <fmt:message key="profile.surname" bundle="${rb}"/>
                                 </td>
-                                <td>${user.surname}</td>
+                                <td><c:out value="${user.surname}"></c:out></td>
                             </tr>
                             <tr>
                                 <td class="type">
                                     <fmt:message key="profile.email" bundle="${rb}"/>
                                 </td>
-                                <td>${user.email}</td>
+                                <td><c:out value="${user.email}"></c:out></td>
                             </tr>
                             <tr>
                                 <td class="type">
                                     <fmt:message key="profile.reg_date" bundle="${rb}"/>
                                 </td>
-                                <td>${user.regDate}</td>
+                                <td><c:out value="${user.regDate}"></c:out></td>
                             </tr>
                         </tbody>
                     </table>
@@ -127,5 +149,7 @@
             </div>
             <%@ include file="common/footer.jsp"%>
         </div>
+
+        <script type="text/javascript" src="${pageContext.request.contextPath}/js/cinemarating.js"></script>
     </body>
 </html>

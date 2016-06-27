@@ -1,21 +1,14 @@
 package by.bsu.cinemarating.entity;
 
-import java.sql.Timestamp;
+import by.bsu.cinemarating.format.FormattedTimestamp;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Irina
- * Date: 24.04.16
- * Time: 9:20
- * To change this template use File | Settings | File Templates.
- */
 public class Review {
     private User user;
     private int mid;
     private String text;
-    private Timestamp time;
+    private FormattedTimestamp time;
 
-    public Review(User user, int mid, String text, Timestamp time) {
+    public Review(User user, int mid, String text, FormattedTimestamp time) {
         this.user = user;
         this.mid = mid;
         this.text = text;
@@ -38,11 +31,11 @@ public class Review {
         this.text = text;
     }
 
-    public Timestamp getTime() {
+    public FormattedTimestamp getTime() {
         return time;
     }
 
-    public void setTime(Timestamp time) {
+    public void setTime(FormattedTimestamp time) {
         this.time = time;
     }
 
@@ -52,5 +45,15 @@ public class Review {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    @Override
+    public String toString() {
+        return "Review{" +
+                "userId=" + user.getId() +
+                ", movieId=" + mid +
+                ", text='" + text + '\'' +
+                ", time=" + time +
+                '}';
     }
 }

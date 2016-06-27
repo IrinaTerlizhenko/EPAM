@@ -9,9 +9,6 @@ import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 
-/**
- * Created by User on 30.05.2016.
- */
 public class InitBanCommand implements ActionCommand {
     private static Logger log = LogManager.getLogger(InitBanCommand.class);
 

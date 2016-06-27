@@ -26,33 +26,13 @@
                     <fmt:message key="header.all_users" bundle="${rb}"/>
                 </h1>
 
-                <ul class="pagination">
-                    <c:if test="${num_page > 0}">
-                        <li><a href="${pageContext.request.contextPath}/controller?command=change_page&num_page=${num_page - 1}">&laquo;</a></li>
-                    </c:if>
-                    <c:forEach var="index" begin="0" end="${fn:length(users) / 10}"> <!-- todo divide -->
-                        <li id="top-${index}"><a href="${pageContext.request.contextPath}/controller?command=change_page&num_page=${index}">${index + 1}</a></li>
-                    </c:forEach>
-                    <c:if test="${num_page <= fn:length(users) / 10 - 1}"> <!-- todo -->
-                        <li><a href="${pageContext.request.contextPath}/controller?command=change_page&num_page=${num_page + 1}">&raquo;</a></li>
-                    </c:if>
-                </ul>
+                <ctg:pagination upper="true" size="${fn:length(users)}"/>
 
                 <c:forEach var="user" items="${users}" begin="${num_page * 10}" end="${num_page * 10 + 9}">
                     <%@ include file="common/short_user.jsp"%>
                 </c:forEach>
 
-                <ul class="pagination">
-                    <c:if test="${num_page > 0}">
-                        <li><a href="${pageContext.request.contextPath}/controller?command=change_page&num_page=${num_page - 1}">&laquo;</a></li>
-                    </c:if>
-                    <c:forEach var="index" begin="0" end="${fn:length(users) / 10}"> <!-- todo divide -->
-                        <li id="bottom-${index}"><a href="${pageContext.request.contextPath}/controller?command=change_page&num_page=${index}">${index + 1}</a></li>
-                    </c:forEach>
-                    <c:if test="${num_page <= fn:length(users) / 10 - 1}"> <!-- todo -->
-                        <li><a href="${pageContext.request.contextPath}/controller?command=change_page&num_page=${num_page + 1}">&raquo;</a></li>
-                    </c:if>
-                </ul>
+                <ctg:pagination upper="false" size="${fn:length(users)}"/>
             </div>
             <%@ include file="common/footer.jsp"%>
         </div>

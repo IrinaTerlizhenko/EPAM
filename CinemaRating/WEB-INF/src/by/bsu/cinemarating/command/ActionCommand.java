@@ -18,7 +18,6 @@ public interface ActionCommand {
     String ALL = "all";
     String MOVIE_ID = "movie_id";
     String DELETED = "deleted";
-    String REVIEWS = "reviews";
     String MOVIE = "movie";
     String PAGE = "page";
     String TOP = "top";
@@ -31,10 +30,11 @@ public interface ActionCommand {
     String LOGIN = "login";
     String PASSWORD = "password";
     String ROLE = "role";
-    String REPEAT_PASSWORD = "repeat-password";
+    String REPEAT_PASSWORD = "repeat_password";
     String ID = "id";
     String TYPE = "type";
     String REASON = "reason";
+    String EXPIRATION = "expiration";
     String USER = "user";
     String LANGUAGE = "language";
     String LOCALE = "locale";
@@ -46,5 +46,12 @@ public interface ActionCommand {
     String PICTURE = "picture";
     String USERS = "users";
     String RATING_MAP = "rating_map";
-    String REVIEW_MAP = "review_map";
+    String PREVIOUS_PASSWORD = "previous_password";
+    String FORM = "form";
+    String STATUS = "status";
+    String LATEST_MOVIES = "latest_movies";
+    String TOP_MOVIES = "top_movies";
+    String REVIEWS = "reviews";
+    int SIZE_MOVIE = 5;
+    int SIZE_REVIEW = 3;
 }

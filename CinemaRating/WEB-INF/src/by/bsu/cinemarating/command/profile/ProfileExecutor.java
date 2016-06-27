@@ -24,8 +24,14 @@ public class ProfileExecutor {
     public static String executeProfile(HttpServletRequest request) {
         String page;
         try {
+            int id;
             String idString = request.getParameter(ID);
-            int id = (idString == null) ? (int) request.getSession().getAttribute(USER_ID) : Integer.parseInt(idString);
+            if (idString != null) {
+                id = Integer.parseInt(idString);
+            } else {
+                Object idObject = request.getAttribute(ID);
+                id = (int) ((idObject != null) ? idObject : request.getSession().getAttribute(USER_ID));
+            }
             User user = UserLogic.findUser(id).get();
             request.setAttribute(USER, user);
             page = ConfigurationManager.getProperty("path.page.profile");

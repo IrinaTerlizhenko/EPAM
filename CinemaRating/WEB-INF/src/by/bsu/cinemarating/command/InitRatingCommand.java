@@ -10,13 +10,7 @@ import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Irina
- * Date: 24.04.16
- * Time: 6:37
- * To change this template use File | Settings | File Templates.
- */
+@Deprecated
 public class InitRatingCommand implements ActionCommand {
     private static Logger log = LogManager.getLogger(InitRatingCommand.class);
 

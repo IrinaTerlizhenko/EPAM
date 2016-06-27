@@ -10,18 +10,11 @@ import org.apache.logging.log4j.Logger;
 import javax.servlet.http.HttpServletRequest;
 import java.sql.SQLException;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Irina
- * Date: 23.04.16
- * Time: 9:09
- * To change this template use File | Settings | File Templates.
- */
 public class RateCommand implements ActionCommand {
     private static Logger log = LogManager.getLogger(RateCommand.class);
 
     @Override
-    public String execute(HttpServletRequest request) { // todo return to current_movie page
+    public String execute(HttpServletRequest request) {
         String page;
         try {
             int movieId = Integer.parseInt(request.getParameter(MOVIE_ID));

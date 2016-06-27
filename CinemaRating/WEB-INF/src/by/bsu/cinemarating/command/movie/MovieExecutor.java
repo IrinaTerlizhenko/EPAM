@@ -47,21 +47,6 @@ public class MovieExecutor {
         return page;
     }
 
-    /*public static String executeAllMovies(SessionRequestContent request) { todo
-        String page;
-        try {
-            List<Movie> movieList = MovieLogic.takeAllMovies();
-            Collections.reverse(movieList);
-            request.addRequestAttribute(MOVIES, movieList);
-            request.addSessionAttribute(PAGE_TYPE, ALL);
-            page = ConfigurationManager.getProperty("path.page.movies");
-        } catch (LogicException e) {
-            log.error(e);
-            page = ConfigurationManager.getProperty("path.page.error");
-        }
-        return page;
-    }*/
-
     public static String executeTopMovies(HttpServletRequest request) {
         String page;
         try {
@@ -76,15 +61,6 @@ public class MovieExecutor {
         }
         return page;
     }
-
-    /*public static String executeMovies(HttpServletRequest request) {
-        String pageType = (String) request.getSession().getAttribute(PAGE_TYPE);
-        if (TOP.equals(pageType)) {
-            return MovieExecutor.executeTopMovies(request);
-        } else { // ALL.equals(pageType);
-            return MovieExecutor.executeAllMovies(request);
-        }
-    }todo*/
 
     public static String executeShowMovie(HttpServletRequest request) {
         String page;

@@ -1,8 +1,5 @@
 package by.bsu.cinemarating.entity;
 
-/**
- * Created by User on 01.06.2016.
- */
 public class Rating {
     private int movieId;
     private int userId;
@@ -36,5 +33,14 @@ public class Rating {
 
     public void setRating(byte rating) {
         this.rating = rating;
+    }
+
+    @Override
+    public String toString() {
+        return "Rating{" +
+                "movieId=" + movieId +
+                ", userId=" + userId +
+                ", rating=" + rating +
+                '}';
     }
 }

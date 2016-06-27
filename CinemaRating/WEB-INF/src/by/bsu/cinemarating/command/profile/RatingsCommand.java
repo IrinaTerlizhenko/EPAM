@@ -11,9 +11,6 @@ import org.apache.logging.log4j.Logger;
 import javax.servlet.http.HttpServletRequest;
 import java.util.LinkedHashMap;
 
-/**
- * Created by User on 13.06.2016.
- */
 public class RatingsCommand implements ActionCommand {
     private static Logger log = LogManager.getLogger(RatingsCommand.class);
 
